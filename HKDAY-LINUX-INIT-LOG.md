@@ -16,84 +16,83 @@ INIT
 
 #############
 # Setup Apt
-apt-get update
+	apt-get update
 
 #############
 # Setup compiler , versioning , debugger
-apt-get install build-essential git-core gdb
+	apt-get install build-essential git-core gdb
 
 #############
 # Basic tools ( encrypt , archiving , decoding )
-apt-get install pgp zip libiconv-hook-dev
+	apt-get install pgp zip libiconv-hook-dev
 
 #############
 # Setup package configuration, cacher, more compiler
-apt-get install pkg-config ccache clang pmake
+	apt-get install pkg-config ccache clang pmake
 
-mv /usr/bin/make /usr/bin/make-linux
-ln -s /usr/bin/pmake /usr/bin/make
+	mv /usr/bin/make /usr/bin/make-linux
+	ln -s /usr/bin/pmake /usr/bin/make
 
 #############
 # Install event library
-apt-get install libevent-dev libevent-core-2.0-5
+	apt-get install libevent-dev libevent-core-2.0-5
 
 #############
 # Add BBS group
-echo ¡§bbs:x:99:¡¨ >> /etc/group
+	echo ¡§bbs:x:99:¡¨ >> /etc/group
 
 #############
 # Setup Shared Memory in Kernel ( Need reboot to take effect )
-vim /etc/sysctl.conf
-	# add rows:
+	vim /etc/sysctl.conf
+#### add rows:
 	kernel.shmmax=104857600
 	kernel.shmall=25600
 
 #############
 # Setup unix Accounts for BBS ( use passwd to update password for bbsadm )
-vipw
-	# add rows:
-bbs::9999:99:HKDAY.NET:/home/bbs:/home/bbs/bin/bbsrf
-bbsadm:x:9999:99:HKDAY.NET:/home/bbs:/bin/bash
+	vipw
+#### add rows:
+	bbs::9999:99:HKDAY.NET:/home/bbs:/home/bbs/bin/bbsrf
+	bbsadm:x:9999:99:HKDAY.NET:/home/bbs:/bin/bash
 
 #############
 # Setup home in hard drive
-mkdir /home/bbs
-chown bbs.bbs /home/bbs
-chmod 700 /home/bbs
+	mkdir /home/bbs
+	chown bbs.bbs /home/bbs
+	chmod 700 /home/bbs
 
 #############
 # Change to BBSadm 
-su - bbsadm
-cd~
+	su - bbsadm
+	cd~
 
 #############
 # Get source
-git clone https://github.com/bencrox/hkday-pttbbs.git
+	git clone https://github.com/bencrox/hkday-pttbbs.git
 
 #############
 # Make the binaries
-cd hkday-pttbbs
-make OSTYPE=linux BBSHOME=/home/bbs all install
+	cd hkday-pttbbs
+	make OSTYPE=linux BBSHOME=/home/bbs all install
 
 #############
 # WARNING!!! Do this only for 1st setup in your environment!
-cd sample
-make install
-cd ~
-bin/initbbs -DoIt
+	cd sample
+	make install
+	cd ~
+	bin/initbbs -DoIt
 
 #############
 # initialize the shared memory
-bin/shmctl init
+	bin/shmctl init
 
 #############
 # back to root, optional, use other ports > 1024 if not root
-exit
+	exit
 
-	now as root
-
-cd ~bbs
-bin/mbbsd -p 23 -d
+#### now as root
+	cd ~bbs
+	bin/mbbsd -p 23 -d
 
 #############
 # Done~!  if not , report to lxb at hkday dot net 
